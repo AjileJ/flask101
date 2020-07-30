@@ -1,41 +1,46 @@
-{% extends 'base.html' %}
+{% extends "bootstrap/base.html" %}
 
-{% block head %}
-<title>Task Master</title>
+{% block title %}
+Demo App
 {% endblock %}
 
-{% block body %}
-<div class="content">
-    <h1 style="text-align: center">Task Master</h1>
-    {% if tasks|length < 1 %}
-    <h4 style="text-align: center">There are no tasks. Create one below!</h4>
-    {% else %}
-    <table>
-        <tr>
-            <th>Task</th>
-            <th>Added</th>
-            <th>Actions</th>
-        </tr>
-        {% for task in tasks %}
-            <tr>
-                <td>{{ task.content }}</td>
-                <td>{{ task.date_created.date() }}</td>
-                <td>
-                    <a href="/delete/{{task.id}}">Delete</a>
-                    <br>
-                    <a href="/update/{{task.id}}">Update</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='css/starter-template.css')}}">
+{% endblock %}
 
-    <div class="form">
-        <form action="/" method="POST">
-            <input type="text" name="content" id="content">
-            <input type="submit" value="Add Task">
-        </form>
-    </div>
-</div>
+{% block content %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Scriptures Pro</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Welcome to Scriptures Pro !</h1>
+        <p class="lead">Choose God first by saving your favorite scriptures and memorizing them!<br>You won't forget that verse you learned last Sunday anymore!</p>
+        <img src="https://i.pinimg.com/originals/90/ac/18/90ac1811c7adc3e8607db8a614f9a012.jpg" alt="scriptures">
+        <h2><a href="{{ url_for('login') }}">Login</a> and start now!</h2>
+        <h3>If you don't have an account already, you can <a href="{{ url_for('signup') }}">Sign Up</a> for one!</h3>
+      </div>
+
+    </div><!-- /.container -->
 {% endblock %}
 
