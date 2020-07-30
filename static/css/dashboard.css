@@ -104,4 +104,55 @@ body {
     border-radius: 50%;
   }
 
+  .formo {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    width: 300px
+  }
+
+  #form-wrapo {
+    border: 1px solid red;
+    display: flex;
+    justify-content: center;
+  }
+
+  .inputo {
+    margin: 5px;
+    padding: 5px;
+    font-size: large;
+    box-sizing: border-box;
+  }
+
+  .inputlabel {
+    font-size: medium;
+    font-weight: bold;
+  }
+
+  table, td, th {
+    border: 1px solid black;
+}
+
+  table {
+      border-collapse: collapse;
+      width: 100%;
+  }
+
+  th {
+      height: 30px;
+  }
+
+  td {
+      text-align: center;
+      padding: 5px;
+  }
+
+  .form {
+      margin-top: 20px;
+  }
+
+  #content {
+      width: 70%;
+  }
+ 
   

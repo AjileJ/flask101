@@ -1,4 +1,5 @@
 {% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
 Dashboard
@@ -54,13 +55,50 @@ Dashboard
           
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Welcome, {{ name }} !</h1>
+          <h1 class="page-header">Welcome, {{ name }}!</h1>
 
           <div class="row placeholders">
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
+            <div class="content">
+                <h1 style="text-align: center">Add Scripture</h1>
+                {% if scriptures|length < 1 %}
+                <h4 style="text-align: center">There are no scriptures. Create one below!</h4>
+                {% else %}
+                <table>
+                    <tr>
+                        <th>Scripture</th>
+                        <th>Added</th>
+                        <th>Actions</th>
+                    </tr>
+                    {% for scripture in scriptures %}
+                        <tr>
+                            <td>{{ scripture.book}} {{scripture.chapter}}:{{scripture.verse}}<br>
+                            {{scripture.passage}}
+                            </td>
+                            <td>{{ scripture.date_created.date() }}</td>
+                            <td>
+                                <a href="/delete/{{scripture.id}}">Delete</a>
+                                <br>
+                                <a href="/update/{{scripture.id}}">Update</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+                
+            
+                <div class="form" id="form-wrapo">
+                    <form class='formo' action="{{ url_for('passage') }}" method="POST" id="theform">
+                        <p class="inputlabel">Book: </p>
+                        <input class="inputo" type="text" name="book" id="book">
+                        <p class="inputlabel">Chapter: </p>
+                        <input class="inputo" type="text" name="chapter" id="book">
+                        <p class="inputlabel">Verse: </p>
+                        <input class="inputo" type="text" name="verse" id="verse">
+                        <p class="inputlabel">Passage: </p>
+                        <textarea class="inputo" name="passage" form="theform"></textarea>
+                        <input class="inputo" type="submit" value="Add Scripture">
+                    </form>
+                </div>
             </div>
             
             
