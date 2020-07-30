@@ -22,6 +22,10 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(80))
+    scriptures = db.relationship("Scripture", backref="scriptures", lazy=True, cascade="delete")
+    
+    def __repr__(self):
+        return f'User({self.id}: Username:{self.username} Email:{self.email})'
     
 # class ScriptureModel(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
@@ -38,19 +42,15 @@ def load_user(user_id):
 
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
     remember = BooleanField('remember me')
 
 class RegisterForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50)])
     username = StringField('username', validators=[InputRequired(), Length(min=4, max=15)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
     
-# class ScriptureForm(FlaskForm):
-#     book = StringField('book', validators=[InputRequired(), Length(max=15)])
-#     chapter = StringField('chapter', validators=[InputRequired(), Length(max=15)])
-#     verse = StringField('verse', validators=[InputRequired(), Length(max=15)])
-#     passage = StringField('passage', validators=[InputRequired(), Length(max=200)])
+
 
 
 @app.route('/')
@@ -61,21 +61,27 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    
     form = LoginForm()
-    print('first')
+    
+    
+    
+    
+    print('hi',request.get_json())
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        print(user.username)
         if user:
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
                 print('Hello')
                 return redirect(url_for('dashboard'))
-
-        return '<h1>Invalid username or password</h1>', 
+        else:
+            print('here')
+            return '<h1>Invalid username or password</h1>'
         #return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
-
-    return render_template('login.html', form=form), 500
+    
+    return render_template('login.html', form=form)
+    
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -95,8 +101,10 @@ def signup():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    scriptures = Scripture.query.order_by(Scripture.date_created).all()
+    print('CU', current_user)
+    scriptures = Scripture.query.filter_by(user_id = current_user.id).order_by(Scripture.date_created).all()
     return render_template('dashboard.html', name=current_user.username, scriptures=scriptures)
+    
 
 
 class Scripture(db.Model):
@@ -106,6 +114,7 @@ class Scripture(db.Model):
     verse = db.Column(db.String(200), nullable=False)
     passage = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     def __repr__(self):
         return f'Scripture(book = {self.book},chapter = {self.chapter}, verse = {self.verse}, passage = {self.passage})'
@@ -117,7 +126,7 @@ def passage():
         chapter = request.form['chapter']
         verse = request.form['verse']
         passage = request.form['passage']
-        scrip = Scripture(book=book, chapter=chapter, verse=verse, passage=passage)
+        scrip = Scripture(book=book, chapter=chapter, verse=verse, passage=passage, user_id=current_user.id)
         
 
         try:
@@ -132,6 +141,38 @@ def passage():
         scriptures = Scripture.query.order_by(Scripture.date_created).all()
         print(scriptures)
         return render_template('dashboard.html', scriptures=scriptures)
+    
+    
+@app.route('/delete/<int:id>')
+def delete(id):
+    scripture_to_delete = Scripture.query.get_or_404(id)
+
+    try:
+        db.session.delete(scripture_to_delete)
+        db.session.commit()
+        return redirect('/dashboard')
+    except:
+        return 'There was a problem deleting that scripture'
+    
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+    scripture = Scripture.query.get_or_404(id)
+    print(scripture, id)
+    if request.method == 'POST':
+        scripture.book = request.form['book']
+        scripture.chapter = request.form['chapter']
+        scripture.verse = request.form['verse']
+        scripture.passage = request.form['passage']
+        
+
+        try:
+            db.session.commit()
+            return redirect('/dashboard')
+        except:
+            return 'There was an issue updating your task'
+
+    else:
+        return render_template('update.html', scripture=scripture)
 
 @app.route('/logout')
 @login_required
