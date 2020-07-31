@@ -17,9 +17,17 @@ Sign Up
     <h2 class="form-signin-heading">Sign Up</h2>
     <!-- {{ form.hidden_tag() }} -->
     {{ form.csrf_token }}
-    {{ wtf.form_field(form.username) }}
-    {{ wtf.form_field(form.email) }}
-    {{ wtf.form_field(form.password) }}
+    <div class="divo">
+      <div class="first">
+   <h2 class="formsign"> {{ wtf.form_field(form.username, placeholder="username")}}</h2>
+   </div>
+   <div class="second">
+    <h2 class="formsign">{{ wtf.form_field(form.email, placeholder="email") }}</h2>
+    </div>
+    <div class ="third">
+   <h2 class="formsign"> {{ wtf.form_field(form.password, placeholder="password")}}</h2>
+   </div>
+   </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
   </form>
 
