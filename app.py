@@ -27,12 +27,7 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f'User({self.id}: Username:{self.username} Email:{self.email})'
     
-# class ScriptureModel(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     book = db.Column(db.String(15))
-#     chapter = db.Column(db.String(15))
-#     verse = db.Column(db.String(15))
-#     passage = db.Column(db.String(200))
+
     
 
 
@@ -93,7 +88,11 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return '<h1>New user has been created!</h1>'
+        return(
+            '<h1>New user has been created!</h1>'
+            
+            '<button><a href="http://127.0.0.1:5000/login">Login!</a></button>'
+            )
         #return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
 
     return render_template('signup.html', form=form)
