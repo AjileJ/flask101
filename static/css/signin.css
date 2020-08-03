@@ -14,10 +14,20 @@ body {
   .form-signin .form-signin-heading,
   .form-signin .checkbox {
     margin-bottom: 10px;
+    
   }
   .form-signin .checkbox {
     font-weight: normal;
   }
+  input#remember {
+      width: 25px;
+      height: 25px;
+  }
+  label {
+      font-size: 20px;
+      padding: 10px;
+  }
+
   .form-signin .form-control {
     position: relative;
     height: auto;
@@ -46,7 +56,7 @@ body {
   }
 
   h2.form-signin-heading {
-      font-size: 55px;
+      font-size: 65px;
   }
 
 
