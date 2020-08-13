@@ -1,0 +1,111 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Scriptures Pro</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="#">Analytics</a></li>
+            <li><a href="#">Export</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href="">Nav item</a></li>
+            <li><a href="">Nav item again</a></li>
+            <li><a href="">One more nav</a></li>
+            <li><a href="">Another nav item</a></li>
+            <li><a href="">More navigation</a></li>
+          </ul>
+          
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Welcome, {{ name }}!</h1>
+
+          <div class="row placeholders">
+            <div class="content">
+                <h1 style="text-align: center">Add Scripture</h1>
+                {% if scriptures|length < 1 %}
+                <h4 style="text-align: center">There are no scriptures. Create one below!</h4>
+                {% else %}
+                <table>
+                    <tr>
+                        <th>Scripture:</th>
+                        <th>Added</th>
+                        <th>Actions</th>
+                    </tr>
+                    {% for scripture in scriptures %}
+                        <tr>
+                            <td>{{ scripture.book}} {{scripture.chapter}}:{{scripture.verse}}<br>
+                            {{scripture.passage}}
+                            </td>
+                            <td>{{ scripture.date_created.date() }}</td>
+                            <td>
+                                <a href="/delete/{{scripture.id}}">Delete</a>
+                                <br>
+                                <a href="/update/{{scripture.id}}">Update</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+                
+            
+                <div class="form" id="form-wrapo">
+                    <form class='formo' action="{{ url_for('passage') }}" method="POST" id="theform">
+                        <p class="inputlabel">Book: </p>
+                        <input class="inputo" type="text" name="book" id="book">
+                        <p class="inputlabel">Chapter: </p>
+                        <input class="inputo" type="text" name="chapter" id="chapter">
+                        <p class="inputlabel">Verse: </p>
+                        <input class="inputo" type="text" name="verse" id="verse">
+                        <p class="inputlabel">Passage: </p>
+                        <textarea class="inputo" name="passage" form="theform"></textarea>
+                        <input class="inputo" type="submit" value="Add Scripture">
+                    </form>
+                </div>
+            </div>
+            
+            
+            
+          </div>
+
+        </div>
+      </div>
+    </div>
+{% endblock %}
